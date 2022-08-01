@@ -8,11 +8,20 @@ import {PORT} from './config.js'
 
 const app = express();
 const server = http.createServer(app)
-const io = new SocketServer(server)
+const io = new SocketServer(server, {
+    cors: {
+        origin: 'http://localhost:3000',
+    }
+})
 
 app.use(cors())
 app.use(morgan('dev'));
 
+io.on('connection', (socket) => {
+    console.log(socket.id)
+    console.log('a user connected')
+})
 
-app.listen(PORT)
-console.log('Server started port', PORT)
+
+server.listen(PORT);
+console.log('Server started port', PORT);
