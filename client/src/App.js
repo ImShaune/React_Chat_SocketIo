@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import io from "socket.io-client";
 
-const socket = io("http://localhost:8080");
+const socket = io("http://localhost:8081");
 
 
 export default function App() {
@@ -34,7 +34,7 @@ export default function App() {
   return (
     <div className="h-screen bg-zinc-800 text-white flex items-center justify-center">
       <form onSubmit={handleSubmit} className="bg-zinc-900 p-10">
-        <h1 className="text-2xl font-bold my-2">Chat React</h1>
+      <h1 className="text-2x1 font-bold my-2">Chat React</h1>
         <input
           name="message"
           type="text"
