@@ -1,32 +1,37 @@
-import express from 'express'
-import morgan from 'morgan'
-import {Server as SocketServer} from 'socket.io'
-import http from 'http'
-import cors from 'cors'
+import express from "express";
+import http from "http";
+import morgan from "morgan";
+import { Server as SocketServer } from "socket.io";
+import { join, dirname } from "path";
+import { fileURLToPath } from "url";
 
-import {PORT} from './config.js'
+import { PORT } from "./config.js";
+import cors from "cors";
 
 const app = express();
-const server = http.createServer(app)
+const server = http.createServer(app);
 const io = new SocketServer(server, {
-    cors: {
-        origin: 'http://localhost:3000',
-    }
-})
+   cors: {
+     origin: "http://localhost:3000",
+   },
+});
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
-app.use(cors())
-app.use(morgan('dev'));
+app.use(cors());
+app.use(morgan("dev"));
+app.use(express.urlencoded({ extended: false }));
 
-io.on('connection', (socket) => {
-    console.log(socket.id)
-    
-    socket.on('message', (message) => {
-        console.log(message)
-        socket.broadcast.emit('message', message)
-    })
+app.use(express.static(join(__dirname, "../client/build")));
 
-})
-
+io.on("connection", (socket) => {
+  console.log(socket.id);
+  socket.on("message", (body) => {
+    socket.broadcast.emit("message", {
+      body,
+      from: socket.id.slice(8),
+    });
+  });
+});
 
 server.listen(PORT);
-console.log('Server started port', PORT);
+console.log(`server on port ${PORT}`);
